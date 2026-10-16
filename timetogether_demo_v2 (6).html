@@ -1,0 +1,547 @@
+<div id="wa-root"></div>
+<style>
+  #wa-root {
+    --wa-bg: #0B141A;
+    --wa-panel: #111B21;
+    --wa-panel2: #1F2C34;
+    --wa-green: #25D366;
+    --wa-green-dark: #202C33;
+    --wa-text: #E9EDEF;
+    --wa-subtext: #8696A0;
+    --wa-border: #222D34;
+    --wa-red: #F15C6D;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 380px;
+    margin: 0 auto;
+    background: #000;
+    border-radius: 36px;
+    padding: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #wa-root .screen-wrap {
+    background: var(--wa-bg);
+    border-radius: 28px;
+    overflow: hidden;
+    position: relative;
+    height: 740px;
+    display: flex;
+    flex-direction: column;
+  }
+  #wa-root .statusbar {
+    background: var(--wa-bg);
+    color: var(--wa-text);
+    font-size: 12px;
+    padding: 10px 20px 2px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+  }
+  #wa-root .header {
+    padding: 10px 16px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #wa-root .header h1 {
+    font-size: 26px;
+    margin: 0;
+    font-weight: 500;
+    color: var(--wa-text);
+  }
+  #wa-root .header-icons {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+  }
+  #wa-root .icon-btn {
+    background: none;
+    border: none;
+    color: var(--wa-text);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+  }
+  #wa-root .quick-actions {
+    display: flex;
+    gap: 14px;
+    padding: 10px 16px 14px;
+    overflow-x: auto;
+  }
+  #wa-root .qa-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  #wa-root .qa-circ {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--wa-panel2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--wa-text);
+  }
+  #wa-root .qa-circ.highlight {
+    background: #103028;
+    color: var(--wa-green);
+  }
+  #wa-root .qa-label {
+    font-size: 11.5px;
+    color: var(--wa-subtext);
+    white-space: nowrap;
+  }
+  #wa-root .section-title {
+    font-size: 15px;
+    color: var(--wa-text);
+    font-weight: 500;
+    padding: 6px 16px 4px;
+  }
+  #wa-root .list-scroll {
+    flex: 1;
+    overflow-y: auto;
+  }
+  #wa-root .call-row, #wa-root .rank-row {
+    display: flex;
+    align-items: center;
+    padding: 9px 16px;
+    gap: 12px;
+    cursor: pointer;
+  }
+  #wa-root .avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  #wa-root .row-main {
+    flex: 1;
+    min-width: 0;
+  }
+  #wa-root .row-name {
+    font-size: 16px;
+    color: var(--wa-text);
+    font-weight: 400;
+  }
+  #wa-root .row-sub {
+    font-size: 13.5px;
+    color: var(--wa-subtext);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+  }
+  #wa-root .row-sub.out { color: var(--wa-subtext); }
+  #wa-root .row-sub svg.arrow-in { color: var(--wa-green); }
+  #wa-root .row-sub svg.arrow-out { color: var(--wa-red); }
+  #wa-root .call-icon-side {
+    color: var(--wa-subtext);
+    flex-shrink: 0;
+  }
+  /* Insights ranking header */
+  #wa-root .rank-header-top {
+    padding: 10px 16px 4px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  #wa-root .back-btn {
+    background: none;
+    border: none;
+    color: var(--wa-text);
+    cursor: pointer;
+    display: flex;
+  }
+  #wa-root .rank-header-top h1 {
+    font-size: 22px;
+    margin: 0;
+    font-weight: 500;
+    color: var(--wa-text);
+  }
+  #wa-root .timeframe-row {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px 12px;
+    overflow-x: auto;
+  }
+  #wa-root .tf-btn {
+    background: var(--wa-panel2);
+    border: none;
+    color: var(--wa-subtext);
+    padding: 7px 16px;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #wa-root .tf-btn.active {
+    background: var(--wa-green);
+    color: #05231A;
+  }
+  #wa-root .search-row {
+    display: flex;
+    align-items: center;
+    background: var(--wa-panel2);
+    margin: 4px 16px 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    gap: 8px;
+  }
+  #wa-root .search-row input {
+    border: none;
+    outline: none;
+    font-size: 14.5px;
+    flex: 1;
+    color: var(--wa-text);
+    background: transparent;
+  }
+  #wa-root .search-row input::placeholder { color: var(--wa-subtext); }
+  #wa-root .rank-num {
+    width: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--wa-subtext);
+    text-align: center;
+    flex-shrink: 0;
+  }
+  #wa-root .rank-time {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  #wa-root .rank-time .hrs {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--wa-text);
+  }
+  #wa-root .bar-track {
+    height: 4px;
+    background: var(--wa-panel2);
+    border-radius: 4px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  #wa-root .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+  }
+  #wa-root .empty-note {
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--wa-subtext);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  /* Bio / breakdown screen */
+  #wa-root .bio-header {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  #wa-root .bio-avatar-wrap {
+    text-align: center;
+    padding: 16px 16px 20px;
+  }
+  #wa-root .bio-avatar-big {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 32px;
+  }
+  #wa-root .bio-name {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--wa-text);
+  }
+  #wa-root .bio-sub {
+    font-size: 13.5px;
+    color: var(--wa-subtext);
+    margin-top: 4px;
+  }
+  #wa-root .card {
+    background: var(--wa-panel2);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 8px 16px;
+  }
+  #wa-root .card-title {
+    font-size: 12px;
+    color: var(--wa-green);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    margin-bottom: 12px;
+  }
+  #wa-root .time-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  #wa-root .time-stat-total {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--wa-text);
+  }
+  #wa-root .time-stat-trend {
+    font-size: 12px;
+    color: var(--wa-subtext);
+  }
+  #wa-root .split-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  #wa-root .split-item {
+    flex: 1;
+    background: var(--wa-panel);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  #wa-root .split-item .lbl {
+    font-size: 11.5px;
+    color: var(--wa-subtext);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+  #wa-root .split-item .val {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--wa-text);
+  }
+  #wa-root .nav-hint {
+    text-align: center;
+    padding: 8px;
+    font-size: 11px;
+    color: #55636B;
+  }
+</style>
+<script>
+(function(){
+  const contacts = [
+    { name: "Gloria Ceo", color: "#7B8794", month: 5.9, week: 1.3, day: 0.4, year: 58, video: 0.5, voice: 5.4, lastCall: "22 minutes ago", dir: "out", type: "voice" },
+    { name: "Chris 👌 (2)", color: "#D89A3D", month: 13.6, week: 3.9, day: 0.9, year: 98, video: 9.2, voice: 4.4, lastCall: "Today, 08:39", dir: "in", type: "video" },
+    { name: "Class Rep (2)", color: "#3B3B3B", month: 2.1, week: 0.4, day: 0, year: 19, video: 0.3, voice: 1.8, lastCall: "Today, 06:45", dir: "out", type: "voice" },
+    { name: "My Mum 😍", color: "#EF6C6C", month: 6.3, week: 1.4, day: 0.2, year: 61, video: 1.1, voice: 5.2, lastCall: "Yesterday, 21:50", dir: "in", type: "voice" },
+    { name: "Nana", color: "#8E6BC2", month: 9.8, week: 2.6, day: 0.5, year: 87, video: 6.1, voice: 3.7, lastCall: "Yesterday, 13:06", dir: "out", type: "voice" },
+    { name: "Blood (2)", color: "#4CAF93", month: 0.8, week: 0.1, day: 0, year: 7, video: 0.1, voice: 0.7, lastCall: "Yesterday, 10:49", dir: "in-missed", type: "voice" },
+    { name: "Glory Fashion", color: "#111", month: 1.2, week: 0.2, day: 0, year: 9, video: 0.2, voice: 1.0, lastCall: "Yesterday, 08:16", dir: "in", type: "voice" },
+  ];
+
+  let state = {
+    screen: "calls",
+    timeframe: "month",
+    search: "",
+    activeContact: null,
+  };
+
+  function initials(name){
+    return name.replace(/[^\p{L}\p{N} ]/gu,"").trim().split(" ")[0][0].toUpperCase();
+  }
+
+  function fmtHrs(v){
+    const h = Math.floor(v);
+    const m = Math.round((v - h) * 60);
+    if (h === 0 && m === 0) return "0m";
+    if (h === 0) return m + "m";
+    if (m === 0) return h + "h";
+    return h + "h " + m + "m";
+  }
+
+  function sortedByTime(){
+    const key = state.timeframe;
+    let list = [...contacts].sort((a,b) => b[key] - a[key]);
+    if (state.search.trim()){
+      list = list.filter(c => c.name.toLowerCase().includes(state.search.toLowerCase()));
+    }
+    return list;
+  }
+
+  function icon(name, cls){
+    const c = cls ? ` class="${cls}"` : "";
+    const icons = {
+      search: `<svg${c} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+      dots: `<svg${c} width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>`,
+      phoneCirc: `<svg${c} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.6 10.8c1.5 3 3.9 5.4 6.9 6.9l2.3-2.3c.3-.3.7-.4 1.1-.2 1.2.4 2.5.6 3.8.6.6 0 1 .4 1 1V21c0 .6-.4 1-1 1C10.4 22 2 13.6 2 3.9c0-.6.4-1 1-1h4.2c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.8.1.4 0 .8-.2 1.1L6.6 10.8z"/></svg>`,
+      calendar: `<svg${c} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>`,
+      keypad: `<svg${c} width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="6" r="1.6"/><circle cx="12" cy="6" r="1.6"/><circle cx="18" cy="6" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="12" cy="18" r="1.6"/><circle cx="18" cy="18" r="1.6"/></svg>`,
+      insights: `<svg${c} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="6" y1="20" x2="6" y2="12"/><line x1="12" y1="20" x2="12" y2="6"/><line x1="18" y1="20" x2="18" y2="15"/></svg>`,
+      back: `<svg${c} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><polyline points="15 18 9 12 15 6"/></svg>`,
+      phone: `<svg${c} width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.5 3 3.9 5.4 6.9 6.9l2.3-2.3c.3-.3.7-.4 1.1-.2 1.2.4 2.5.6 3.8.6.6 0 1 .4 1 1V21c0 .6-.4 1-1 1C10.4 22 2 13.6 2 3.9c0-.6.4-1 1-1h4.2c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.8.1.4 0 .8-.2 1.1L6.6 10.8z"/></svg>`,
+      video: `<svg${c} width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg>`,
+      arrowIn: `<svg${c} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="7 7 7 17 17 17"/></svg>`,
+      arrowOut: `<svg${c} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>`,
+    };
+    return icons[name] || "";
+  }
+
+  function renderCallsScreen(){
+    return `
+      <div class="header">
+        <h1>Calls</h1>
+        <div class="header-icons">
+          ${icon('search','icon-btn')}
+          ${icon('dots','icon-btn')}
+        </div>
+      </div>
+      <div class="quick-actions">
+        <div class="qa-item">
+          <div class="qa-circ">${icon('phoneCirc')}</div>
+          <div class="qa-label">Call</div>
+        </div>
+        <div class="qa-item" onclick="__wa.go('ranking')">
+          <div class="qa-circ highlight">${icon('insights')}</div>
+          <div class="qa-label">Insights</div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-circ">${icon('calendar')}</div>
+          <div class="qa-label">Schedule</div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-circ">${icon('keypad')}</div>
+          <div class="qa-label">Keypad</div>
+        </div>
+      </div>
+      <div class="section-title">Recent</div>
+      <div class="list-scroll">
+        ${contacts.map(c => `
+          <div class="call-row" onclick="__wa.openBio('${c.name}')">
+            <div class="avatar" style="background:${c.color}">${initials(c.name)}</div>
+            <div class="row-main">
+              <div class="row-name">${c.name}</div>
+              <div class="row-sub">
+                ${c.dir === 'out' ? icon('arrowOut','arrow-out') : icon('arrowIn', c.dir === 'in-missed' ? 'arrow-out' : 'arrow-in')}
+                <span style="${c.dir==='in-missed' ? 'color:var(--wa-red)' : ''}">${c.lastCall}</span>
+              </div>
+            </div>
+            <div class="call-icon-side">${c.type === 'video' ? icon('video') : icon('phone')}</div>
+          </div>
+        `).join("")}
+      </div>
+      <div class="nav-hint">Tap "Insights" above to open the new feature →</div>
+    `;
+  }
+
+  function renderRankingScreen(){
+    const tfs = [["day","Day"],["week","Week"],["month","Month"],["year","Year"],["custom","Custom"]];
+    const list = sortedByTime();
+    const maxVal = Math.max(...list.map(c => c[state.timeframe] || 0), 0.01);
+    return `
+      <div class="rank-header-top">
+        <button class="back-btn" onclick="__wa.go('calls')">${icon('back')}</button>
+        <h1>Insights</h1>
+      </div>
+      <div class="timeframe-row">
+        ${tfs.map(([key,label]) => `
+          <button class="tf-btn ${state.timeframe===key ? 'active':''}" onclick="__wa.setTimeframe('${key}')">${label}</button>
+        `).join("")}
+      </div>
+      <div class="search-row">
+        ${icon('search')}
+        <input id="wa-rank-search" placeholder="Search a name" value="${state.search}" oninput="__wa.setSearch(this.value)" />
+      </div>
+      <div class="section-title">Ranked by total time — highest to lowest</div>
+      <div class="list-scroll">
+        ${state.timeframe === 'custom' ? `
+          <div class="empty-note">Pick a custom date range to see hours spent across any period you choose.</div>
+        ` : list.length === 0 ? `
+          <div class="empty-note">No contacts match "${state.search}"</div>
+        ` : list.map((c, i) => {
+          const val = c[state.timeframe] || 0;
+          const pct = Math.max(4, Math.round((val / maxVal) * 100));
+          return `
+          <div class="rank-row" onclick="__wa.openBio('${c.name}')">
+            <div class="rank-num">${i+1}</div>
+            <div class="avatar" style="background:${c.color}; width:40px; height:40px; font-size:14px;">${initials(c.name)}</div>
+            <div class="row-main">
+              <div class="row-name">${c.name}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:var(--wa-green)"></div></div>
+            </div>
+            <div class="rank-time">
+              <div class="hrs">${fmtHrs(val)}</div>
+            </div>
+          </div>
+        `}).join("")}
+      </div>
+    `;
+  }
+
+  function renderBioScreen(){
+    const c = contacts.find(x => x.name === state.activeContact) || contacts[0];
+    return `
+      <div class="bio-header">
+        <button class="back-btn" onclick="__wa.go('ranking')">${icon('back')}</button>
+      </div>
+      <div class="list-scroll">
+        <div class="bio-avatar-wrap">
+          <div class="bio-avatar-big" style="background:${c.color}">${initials(c.name)}</div>
+          <div class="bio-name">${c.name}</div>
+          <div class="bio-sub">Last call ${c.lastCall}</div>
+        </div>
+        <div class="card">
+          <div class="card-title">TIME SPENT · THIS MONTH</div>
+          <div class="time-stat-row">
+            <div class="time-stat-total">${fmtHrs(c.month)}</div>
+            <div class="time-stat-trend">${c.month > 5 ? '↑' : '↓'} vs last month</div>
+          </div>
+          <div class="split-row">
+            <div class="split-item">
+              <div class="lbl">${icon('video')} Video</div>
+              <div class="val">${fmtHrs(c.video)}</div>
+            </div>
+            <div class="split-item">
+              <div class="lbl">${icon('phone')} Voice</div>
+              <div class="val">${fmtHrs(c.voice)}</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">ALL TIME</div>
+          <div class="time-stat-total">${fmtHrs(c.year)}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function render(){
+    let inner = "";
+    if (state.screen === "calls") inner = renderCallsScreen();
+    else if (state.screen === "ranking") inner = renderRankingScreen();
+    else if (state.screen === "bio") inner = renderBioScreen();
+
+    document.getElementById("wa-root").innerHTML = `
+      <div class="screen-wrap">
+        <div class="statusbar"><span>11:40</span><span>WhatsApp Demo</span></div>
+        ${inner}
+      </div>
+    `;
+  }
+
+  window.__wa = {
+    go(screen){ state.screen = screen; render(); },
+    setTimeframe(tf){ state.timeframe = tf; render(); },
+    setSearch(v){ state.search = v; render(); const el = document.getElementById('wa-rank-search'); if (el) { el.focus(); el.setSelectionRange(v.length, v.length); } },
+    openBio(name){ state.activeContact = name; state.screen = "bio"; render(); },
+  };
+
+  render();
+})();
+</script>
